@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran · DANA</title>
+    <!-- Font Awesome 5 (icon kantong & copy) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000; /* hitam absolute */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            color: #ffffff;
+        }
+
+        .payment-card {
+            max-width: 500px;
+            width: 100%;
+            background: #0a0a0a;
+            border-radius: 32px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset, 0 0 0 1px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            transition: transform 0.2s ease;
+        }
+
+        .payment-card:hover {
+            box-shadow: 0 30px 50px -15px #000000, 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+        }
+
+        /* label/header */
+        .method-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #1a1a1a;
+            padding: 0.6rem 1.3rem 0.6rem 1rem;
+            border-radius: 50px;
+            width: fit-content;
+            margin-bottom: 1.8rem;
+            border: 1px solid #2a2a2a;
+        }
+
+        .method-badge i {
+            color: #2d9cdb; /* aksen biru DANA */
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 5px rgba(45, 156, 219, 0.3));
+        }
+
+        .method-badge span {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: -0.2px;
+            color: #f0f0f0;
+        }
+
+        /* nominal / instruksi */
+        .title-section {
+            margin-bottom: 2rem;
+        }
+
+        .title-section h2 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+        }
+
+        .title-section .light-text {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .light-text i {
+            color: #4f4f4f;
+        }
+
+        /* nomor tujuan — area premium */
+        .payment-detail {
+            background: #0e0e0e;
+            border-radius: 24px;
+            padding: 1.8rem 1.5rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid #202020;
+            transition: border 0.15s;
+        }
+
+        .payment-detail:hover {
+            border-color: #3a3a3a;
+        }
+
+        .label-small {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #777;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .label-small i {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .nomor-va {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+
+        .nomor-va .number {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: white;
+            font-feature-settings: "tnum";
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #dddddd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #1c1c1c;
+        }
+
+        .btn-copy i {
+            font-size: 0.95rem;
+            color: #b0b0b0;
+        }
+
+        .btn-copy:hover {
+            background: #2a2a2a;
+            border-color: #5a5a5a;
+            color: white;
+        }
+
+        .btn-copy:active {
+            transform: scale(0.96);
+        }
+
+        /* atas nama */
+        .atas-nama {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px dashed #2a2a2a;
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .atas-nama i {
+            color: #8a8a8a;
+            margin-right: 10px;
+            font-size: 0.95rem;
+        }
+
+        .nama-bold {
+            font-weight: 600;
+            color: white;
+            margin-left: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        /* total + peringatan */
+        .info-total {
+            background: #141414;
+            padding: 1.2rem 1.5rem;
+            border-radius: 18px;
+            margin-bottom: 2rem;
+            border: 1px solid #292929;
+        }
+
+        .row-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .row-total span:first-child {
+            color: #b0b0b0;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .row-total .amount {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .warning-message {
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: #e0a81f;
+            background: rgba(224, 168, 31, 0.05);
+            padding: 0.5rem 0.9rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(224, 168, 31, 0.15);
+        }
+
+        .warning-message i {
+            color: #e0a81f;
+            font-size: 0.75rem;
+        }
+
+        /* tombol konfirmasi (opsional) */
+        .btn-primary {
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            font-weight: 700;
+            padding: 1rem;
+            border: none;
+            border-radius: 60px;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.15s;
+            cursor: pointer;
+            border: 1px solid transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary i {
+            color: #0a0a0a;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            color: #5e5e5e;
+            text-align: center;
+            margin-top: 1.5rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-top: 1px solid #202020;
+            padding-top: 1.5rem;
+        }
+
+        .footer-note i {
+            margin: 0 4px;
+        }
+
+        /* utility */
+        .no-select {
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-card">
+        
+        <!-- badge metode DANA -->
+        <div class="method-badge no-select">
+            <i class="fas fa-wallet"></i>
+            <span>DANA</span>
+        </div>
+
+        <!-- judul hal pembayaran -->
+        <div class="title-section">
+            <h2>Pembayaran instan</h2>
+            <div class="light-text">
+                <i class="fas fa-shield-alt"></i> transfer via DANA / dompet digital
+            </div>
+        </div>
+
+        <!-- =====  NOMOR DANA & A/N ===== -->
+        <div class="payment-detail">
+            <div class="label-small">
+                <i class="fas fa-phone-alt"></i> NOMOR TUJUAN
+            </div>
+            
+            <!-- nomor + tombol copy -->
+            <div class="nomor-va">
+                <span class="number" id="danaNumber">083159036819</span>
+                <button class="btn-copy" id="copyButton">
+                    <i class="far fa-copy"></i> Salin
+                </button>
+            </div>
+
+            <!-- atas nama -->
+            <div class="atas-nama">
+                <i class="far fa-user-circle"></i>
+                a/n <span class="nama-bold">&nbsp;Muhammad Aidil</span>
+            </div>
+        </div>
+
+        <!-- info nominal (bisa kamu isi sesuai kebutuhan) 
+             karena tidak disebut, saya taruh contoh kosong / fleksibel -->
+        <div class="info-total">
+            <div class="row-total">
+                <span><i class="fas fa-tag"></i> Total pembayaran</span>
+                <span class="amount">Rp 123.000</span>
+            </div>
+            <div class="warning-message">
+                <i class="fas fa-exclamation-triangle"></i> 
+                Pastikan nomor & nama penerima sesuai sebelum transfer
+            </div>
+        </div>
+
+        <!-- tombol utama: salin semua / konfirmasi (opsional) -->
+        <button class="btn-primary" id="copyAllBtn">
+            <i class="fas fa-check-circle"></i> Salin semua detail
+        </button>
+
+        <!-- catatan kecil -->
+        <div class="footer-note">
+            <i class="fas fa-lock"></i> pembayaran aman · transfer langsung ke pemilik
+        </div>
+    </div>
+
+    <!-- SCRIPT INTERAKSI COPY -->
+    <script>
+        (function() {
+            "use strict";
+
+            const nomorDANA = "083159036819";
+            const namaPemilik = "Muhammad Aidil";
+
+            // Elemen
+            const danaSpan = document.getElementById("danaNumber");
+            const copyBtn = document.getElementById("copyButton");
+            const copyAllBtn = document.getElementById("copyAllBtn");
+
+            // --- fungsi copy sederhana ---
+            function copyTextToClipboard(text) {
+                // modern clipboard API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(text);
+                } else {
+                    // fallback
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    return Promise.resolve();
+                }
+            }
+
+            // 1) tombol copy (nomor saja)
+            copyBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                copyTextToClipboard(nomorDANA).then(() => {
+                    // feedback visual
+                    const originalHTML = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalHTML;
+                    }, 2000);
+                }).catch(() => {
+                    alert("Gagal menyalin, silakan salin manual.");
+                });
+            });
+
+            // 2) tombol "Salin semua detail" – format rapi
+            copyAllBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const detailPembayaran = `DANA : ${nomorDANA}\nA/N   : ${namaPemilik}`;
+                copyTextToClipboard(detailPembayaran).then(() => {
+                    const originalHTML = copyAllBtn.innerHTML;
+                    copyAllBtn.innerHTML = '<i class="fas fa-check"></i> Berhasil disalin!';
+                    setTimeout(() => {
+                        copyAllBtn.innerHTML = originalHTML;
+                    }, 2000);
+                }).catch(() => {
+                    alert("Gagal menyalin detail.");
+                });
+            });
+
+        })();
+    </script>
+
+    <!-- optional: jika ingin total pembayaran dinamis bisa ditambah, 
+         karena ini statis contoh, biarkan 123.000 sebagai dummy -->
+</body>
+</html>
